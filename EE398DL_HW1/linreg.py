@@ -30,20 +30,43 @@ def prepare_X(polynomial_degree, m=20):
     #print('X:', X)
     return X
 
+def perform_gradient_descent(X, y, beta, learning_rate, number_of_iterations):
+    m = len(y)
+    iterations = np.arange(0,number_of_iterations)
+
+    #print('X.shape= ', X.shape)
+    #print('y.shape= ', y.shape)
+    #print('beta.shape= ', beta.shape)
+    y_hypothesized = X.dot(beta)
+    #print('y_hypothesized= ', y_hypothesized.shape)
+
+    for iteration in iterations:
+        y_hypothesized = X.dot(beta)
+        #print('beta1:\n', beta, '\n\n')
+        beta = beta - (learning_rate/m)*(X.T.dot(y_hypothesized - y))
+
+
+    return beta
 
 def estimate_coeffs(polynomial_coeffs):
     polynomial_degree = len(polynomial_coeffs) - 1
-    m = 50  # m is the number of data samples
+    m = 10 #20(order1)  # m is the number of data samples
     X = prepare_X(polynomial_degree, m)
 
-    beta = np.reshape(np.array(polynomial_coeffs,dtype=np.float64),(len(polynomial_coeffs),1))
-    y = np.matmul(X, beta)
-    plt.plot(X[:,polynomial_degree-1], y)
-    plt.show()
+    polynomial_coeffs = np.reshape(np.array(polynomial_coeffs,dtype=np.float64),(len(polynomial_coeffs),1))
+    y = np.matmul(X, polynomial_coeffs)
+    #plt.plot(X[:, polynomial_degree - 1], y)
+    #plt.show()
 
+    beta = np.random.random_integers(-5, 5, size=polynomial_coeffs.shape)
+    #beta = np.zeros(polynomial_coeffs.shape)
+    learning_rate = 0.01
+    number_of_iterations = 2250
+    #print(beta)
 
+    beta = perform_gradient_descent(X, y, beta, learning_rate, number_of_iterations)
 
-    estimated_coeffs = polynomial_coeffs
+    estimated_coeffs = beta
     print('The estimated coefficients are:\n',
           estimated_coeffs)
 
